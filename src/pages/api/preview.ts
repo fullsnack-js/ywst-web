@@ -1,19 +1,19 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import urlJoin from "proper-url-join";
-
+import { NextApiRequest, NextApiResponse } from 'next';
+import urlJoin from 'proper-url-join';
+console.log(process.env.SANITY_PREVIEW_SECRET);
 export default function preview(req: NextApiRequest, res: NextApiResponse) {
   if (!req?.query?.secret) {
-    return res.status(401).json({ message: "No secret token" });
+    return res.status(401).json({ message: 'No secret token' });
   }
-
+  console.log(req?.query?.secret);
   // Check the secret and next parameters
   // This secret should only be known to this API route and the CMS
   if (req.query.secret !== process.env.SANITY_PREVIEW_SECRET) {
-    return res.status(401).json({ message: "Invalid secret token" });
+    return res.status(401).json({ message: 'Invalid secret token' });
   }
 
   if (!req.query.slug) {
-    return res.status(401).json({ message: "No slug" });
+    return res.status(401).json({ message: 'No slug' });
   }
 
   // Enable Preview Mode by setting the cookies

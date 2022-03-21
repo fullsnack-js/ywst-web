@@ -8,8 +8,9 @@ import { groq } from 'next-sanity';
 import { ParsedUrlQuery } from 'querystring';
 import { useEffect, useState } from 'react';
 import { SANITY_ROUTE_QUERY } from 'src/lib/queries';
-
+import NextLink from 'next/link';
 import { usePreviewSubscription, sanityClient } from '../lib/sanity';
+import { GlobalSettings, SanityRoute } from '@/types/schema.types';
 interface Params extends ParsedUrlQuery {
   slug: string;
 }
@@ -23,7 +24,7 @@ const ROUTE_QUERY = groq`
    _type == "cta" => {
     text,
     kind,
-    "slug": reference.slug.current,
+    "slug": reference->slug.current,
     url
   },
 _type == "scheduleSection" => {
@@ -40,7 +41,7 @@ _type == "scheduleSection" => {
 }
   },
   "settings": *[_id == "global-settings"][0]{
-
+    ...,
     "siteTitle": title,
     footerNav[]{
       ...,
@@ -50,7 +51,7 @@ _type == "scheduleSection" => {
       ...,
             includeInSitemap,
             internalId,
-            slug
+           "slug": slug.current
           }
         },
         linkType == "external" => {
@@ -67,7 +68,7 @@ _type == "scheduleSection" => {
           "link": internalReference->{
             includeInSitemap,
             internalId,
-            slug
+            "slug": slug.current
           }
         },
         linkType == "external" => {
@@ -84,204 +85,9 @@ _type == "scheduleSection" => {
 // TODO: break up into subtypes
 type RouteProps = {
   data: {
-    route: {
-      _id: string;
-      _type: 'route';
-      includeInSitemap: boolean;
-      internalId: string;
-      page: {
-        _id: string;
-        _type: 'page';
-        pageSections:
-          | {
-              _key: string;
-              _type: 'cta';
-              kind: string;
-              url?: string;
-              slug?: string;
-              text: string;
-            }
-          | {
-              _key: string;
-              _type: 'videoSection';
-              description: string;
-              title: string;
-              url: string;
-            }
-          | {
-              _key: string;
-              _type: 'scheduleSection';
-              classes: {
-                title: string;
-                _id: string;
-                description: string;
-                eventCalendar?: {
-                  _type: 'eventCalendar';
-                  app: 'apple' | 'google';
-                  calendarId: string;
-                };
-                level: string;
-                schedule: {
-                  _type: 'schedule';
-                  weekday: 'string';
-                  time: {
-                    _type: 'timeRange';
-                    end: string;
-                    start: string;
-                  };
-                };
-                setting:
-                  | {
-                      _type: 'setting';
-                      classType: 'studio';
-                      registerUrl: string;
-                      venue: {
-                        name: string;
-                        url: string;
-                        _type: 'venue';
-                        _id: string;
-                        acccesibility?: {
-                          description?: any[];
-                          wheelchair?: boolean;
-                        };
-                        directions?: any[];
-                        address: {
-                          street: string;
-                          state: string;
-                          postalCode: string;
-                          other?: string;
-                          country: string;
-                          city: string;
-                        };
-                        geolocation?: {
-                          _type: 'geopoint';
-                          lat: number;
-                          lng: number;
-                        };
-                      };
-                    }
-                  | {
-                      _type: 'setting';
-                      classType: 'hybrid';
-                      streaming: string;
-                      registerUrl: string;
-                      venue: {
-                        name: string;
-                        url: string;
-                        _type: 'venue';
-                        _id: string;
-                        acccesibility?: {
-                          description?: any[];
-                          wheelchair?: boolean;
-                        };
-                        directions?: any[];
-                        address: {
-                          street: string;
-                          state: string;
-                          postalCode: string;
-                          other?: string;
-                          country: string;
-                          city: string;
-                        };
-                        geolocation?: {
-                          _type: 'geopoint';
-                          lat: number;
-                          lng: number;
-                        };
-                      };
-                    }
-                  | {
-                      _type: 'setting';
-                      classType: 'online';
-                      streaming: string;
-                      registerUrl: string;
-                    };
-              }[];
-            }[];
-        title: 'Class Schedule';
-      };
-      seo: {
-        _type: 'seo';
-        metaTitle?: string;
-        metaDescription?: string;
-        metaImage?: any;
-      };
-      slug: {
-        _type: 'slug';
-        current: string;
-      };
-    }[];
-    settings: {
-      siteTitle: string;
-      footerNav: {
-        navLink: {
-          linkType: 'internal';
-          link:
-            | {
-                internalId: string;
-                seo: {
-                  _type: 'seo';
-                  metaTitle: string;
-                  metaDescription?: string | undefined;
-                  metaImage?: any | undefined;
-                };
-                slug: {
-                  _type: 'slug';
-                  current: string;
-                };
-              }
-            | {
-                linkType: 'external';
-                link: {
-                  blank: boolean;
-                  href: string;
-                  title: string;
-                };
-              };
-        };
-      }[];
-
-      mainNav: {
-        navLink: {
-          linkType: 'internal';
-          link:
-            | {
-                internalId: string;
-                seo: {
-                  _type: 'seo';
-                  metaTitle: string;
-                  metaDescription?: string | undefined;
-                  metaImage?: any | undefined;
-                };
-                slug: {
-                  _type: 'slug';
-                  current: string;
-                };
-              }
-            | {
-                linkType: 'external';
-                link: {
-                  blank: boolean;
-                  href: string;
-                  title: string;
-                };
-              };
-        };
-      }[];
-      seo: {
-        _type: 'seo';
-        metaDescription: string;
-        metaImage?: any | undefined;
-      };
-      socials: {
-        _key: string;
-        _type: 'social';
-        type: string;
-        url: string;
-      }[];
-    };
+    route: SanityRoute[];
+    settings: GlobalSettings;
   };
-
   preview: boolean;
 } & Pick<Params, 'slug'>;
 
@@ -295,6 +101,9 @@ const Route = ({ data: initialData, slug, preview }: RouteProps) => {
   });
   return (
     <div>
+      {preview && (
+        <NextLink href="/api/exit-preview">Preview Mode Activated!</NextLink>
+      )}
       <pre>{JSON.stringify(initialData, null, 4)}</pre>
     </div>
   );
