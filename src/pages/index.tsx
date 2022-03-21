@@ -1,9 +1,9 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import tw from "twin.macro";
-import styles from "../styles/Home.module.css";
-
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import Image from 'next/image';
+import tw from 'twin.macro';
+import styles from '../styles/Home.module.css';
+import NextLink from 'next/link';
 const Header = tw.header`w-full fixed top-0 border-b-2 border-b-black`;
 const Container = tw.div`w-full flex px-1 py-2`;
 const Home: NextPage = () => {
@@ -16,7 +16,9 @@ const Home: NextPage = () => {
       </Head>
       <Header tw="bg-bg text-fg flex justify-end z-10">
         <Container>
-          <a href="/">HOME</a>
+          <NextLink href="/">
+            <a>HOME</a>
+          </NextLink>
         </Container>
         <Container
           tw="justify-between"
@@ -26,9 +28,15 @@ const Home: NextPage = () => {
             }
           `}
         >
-          <a href="/">ABOUT</a>
-          <a href="/">CLASSES</a>
-          <a href="/">CONTACT</a>
+          <NextLink href="/">
+            <a>ABOUT</a>
+          </NextLink>
+          <NextLink href="/">
+            <a>CLASSES</a>
+          </NextLink>
+          <NextLink href="/">
+            <a>CONTACT</a>
+          </NextLink>
         </Container>
       </Header>
       <div className={styles.container} tw="bg-bg">
@@ -38,7 +46,7 @@ const Home: NextPage = () => {
           </h1>
 
           <p className={styles.description}>
-            Get started by editing{" "}
+            Get started by editing{' '}
             <code className={styles.code}>pages/index.tsx</code>
           </p>
 
@@ -79,7 +87,7 @@ const Home: NextPage = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Powered by{" "}
+            Powered by{' '}
             <span className={styles.logo}>
               <Image
                 src="/vercel.svg"
