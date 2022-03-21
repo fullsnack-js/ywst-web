@@ -47,9 +47,15 @@ export const seoFields = `
 `;
 export const siteSettingsFields = `
   title,
-  footerNav[]{${navFields}},
-  mainNav[]{${navFields}},
+  "footer": footerNav[]{${navFields}},
+  "topNav": mainNav[]{${navFields}},
   contactEmail,
   socials,
   seo->
+`;
+
+export const SANITY_SETTINGS_QUERY = `
+*[_id == "global-settings"]{
+  ...,
+}
 `;

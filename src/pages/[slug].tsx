@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react';
 import { SANITY_ROUTE_QUERY } from 'src/lib/queries';
 
 import { usePreviewSubscription, sanityClient } from '../lib/sanity';
-import { pageSections } from '../../../ywst-cms/schemas/fields/page-sections';
 interface Params extends ParsedUrlQuery {
   slug: string;
 }
@@ -82,7 +81,7 @@ _type == "scheduleSection" => {
   }
 }
 `;
-// TODO: finish RouteProps type
+// TODO: break up into subtypes
 type RouteProps = {
   data: {
     route: {
